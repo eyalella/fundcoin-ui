@@ -48,6 +48,10 @@ contract FundboxContract {
 
     }
 
+    function() payable{
+        funds_available += msg.value;
+    }
+
     function getFundsAvailable() public returns (uint) {
         return funds_available;
     }
@@ -81,7 +85,7 @@ contract FundboxContract {
     }
 
     function makePayment(uint amount) public returns (bool) {
-        for (uint i = 0; i < extended_loans[msg.sender].loans.length(); i++) {
+        for (uint i = 0; i < extended_loans[msg.sender].loans.length; i++) {
             if (extended_loans[msg.sender].loans[i].balance > 0) {
                 extended_loans[msg.sender].loans[i].balance -= amount;
                 return true;

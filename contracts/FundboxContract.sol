@@ -96,30 +96,30 @@ contract FundboxContract {
       uint numberOfLoans;
       uint fundCoinsOwned;
       uint fundCoinsEarned;
-      
-      //creditLimit = credit_infos[msg.sender].credit_available;
-      //numberOfLoans = extended_loans[msg.sender].loans.length;
-      creditLimit = 77;
-      numberOfLoans = 88;
-      fundCoinsOwned = 0;
-      fundCoinsEarned = 0;
+
+      if (!credit_infos[msg.sender].exists) {
+        creditLimit = 0;
+        numberOfLoans = 0;
+        fundCoinsOwned = 0;
+        fundCoinsEarned = 0;
+      } else {
+        creditLimit = credit_infos[msg.sender].credit_available;
+        numberOfLoans = extended_loans[msg.sender].loans.length;
+        fundCoinsOwned = 0;
+        fundCoinsEarned = 0;
+      }
 
       return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit);
     }
 
     function getLoanData(uint index) public constant returns(uint, uint, uint) {
       // originalDebt, outstandingDebt, outstandingInterest
-      return (extended_loans[msg.sender].loans[index].amount_extended,
-              extended_loans[msg.sender].loans[index].balance,
-              extended_loans[msg.sender].loans[index].fees);
+      if (!credit_infos[msg.sender].exists) {
+        return (0,8,0);
+      } else {
+        return (extended_loans[msg.sender].loans[index].amount_extended,
+                extended_loans[msg.sender].loans[index].balance,
+                extended_loans[msg.sender].loans[index].fees);
+      }
     }
-
-    /* function startSession() public returns?{
-      fundCoinsOwned == fundsInvested
-      fundCoinsEarned == interest
-
-      numberOfLoans
-      getLoan - originalDebt, outstandingDebt, outstandingInterest
-      creditLimit
-    } */
 }

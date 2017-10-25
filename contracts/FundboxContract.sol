@@ -20,7 +20,7 @@ contract FundboxContract is TrackingBasicToken {
     }
 
     function investInFundCoin() public payable {
-        transferFrom(owner_addr, msg.sender, SafeMath.div(x, PRICE));
+        transferFrom(owner_addr, msg.sender, SafeMath.div(msg.value, PRICE));
     }
 
     function payOut(uint fees) {
@@ -137,7 +137,7 @@ contract FundboxContract is TrackingBasicToken {
       } else {
         creditLimit = credit_infos[msg.sender].credit_available;
         numberOfLoans = extended_loans[msg.sender].loans.length;
-        fundCoinsOwned = 0;
+        fundCoinsOwned = balanceOf(msg.sender);
         fundCoinsEarned = 0;
       }
 

@@ -31,13 +31,18 @@ const mapDispatchToProps = (dispatch) => {
         console.log(accs);
 
         Fundcoin.deployed().then((contract) => {
-          contract.send(web3.toWei(1, "ether")).then(() => {
-            debugger;
-            console.log(contract);
-            contract.funds_available().then((err, data) => {
-              debugger;
+          web3.eth.getBalance(contract.address, () => {
+            console.log(arguments)
+            contract.requestLoan(web3.toWei(2, "ether")).then(() => {
+              web3.eth.getBalance(contract.address, () => {
+                console.log(arguments)
+              });
             })
           })
+
+          // contract.send(web3.toWei(15, "ether")).then((err, data) => {
+
+          // })
         })
       });
     },

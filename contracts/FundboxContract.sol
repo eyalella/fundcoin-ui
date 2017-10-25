@@ -76,8 +76,8 @@ contract FundboxContract {
         extended_loans[msg.sender].loans.push(ExtendedLoan({amount_extended : amount, fees : 0,
                                     balance : amount,  block_number_due : 0, status : ExtendedLoanStatus.Open}));
         loanExtendedUpdateCredit(amount);
+        msg.sender.transfer(amount);
         return true;
-
     }
 
     function getAvailableCredit() public returns (uint) {

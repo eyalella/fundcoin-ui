@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
+import AddAddressButtonContainer from "../../user/ui/addAddressButton/AddAddressButtonContainer"
 
 class Home extends Component {
   render() {
     return(
       <main className="container">
         <h1>Please enter your wallet address</h1>
-        <input type="text" placeholder="0x123f681646d4a755815f9cb19e1acc8565a0c2ac" />
-        <input type="button" value="Go" />
+        <AddAddressButtonContainer></AddAddressButtonContainer>
       </main>
     )
   }

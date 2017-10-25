@@ -4,7 +4,7 @@ import AddAddressButton from './AddAddressButton'
 import { default as contract } from 'truffle-contract'
 import store from "../../../store"
 
-import fundcoin_contract from "../../../../build/contracts/Migrations.json";
+import fundcoin_contract from "../../../../build/contracts/FundboxContract.json";
 const Fundcoin = contract(fundcoin_contract);
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,7 +14,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     sendUserAddress: (event) => {
-      debugger;
       const web3 = store.getState().web3.web3Instance;
       Fundcoin.setProvider(web3.currentProvider);
       web3.eth.getAccounts(function(err, accs) {
@@ -28,13 +27,18 @@ const mapDispatchToProps = (dispatch) => {
           return;
         }
 
-        console.log(event);
+        web3.eth.defaultAccount = accs[0];
         console.log(accs);
 
-        // accounts = accs;
-        // account = accounts[0];
-        //
-        // self.refreshBalance();
+        Fundcoin.deployed().then((contract) => {
+          contract.send(web3.toWei(1, "ether")).then(() => {
+            debugger;
+            console.log(contract);
+            contract.funds_available().then((err, data) => {
+              debugger;
+            })
+          })
+        })
       });
     },
   }

@@ -43,8 +43,8 @@ contract FundboxContract {
     mapping(address => AddressExtendedLoans) extended_loans;
     mapping(address => AddressCreditInfo) credit_infos;
 
-    function fundContract(uint x) public {
-        funds_available += x;
+    function fundContract() public payable {
+        funds_available += msg.value;
 
     }
 

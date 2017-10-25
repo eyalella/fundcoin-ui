@@ -9,7 +9,6 @@ contract FundboxContract {
         uint amount;
         LoanRequestStatus status;
         uint block_number;
-
     }
 
     enum ExtendedLoanStatus { Open, Repaid, Delq }
@@ -36,13 +35,8 @@ contract FundboxContract {
         ExtendedLoan[] loans;
     }
 
+    // check if we can get current balance, if so, not needed
     uint public funds_available;
-
-
-    mapping(address => AddressLoanRequests) loan_requests;
-    mapping(address => AddressExtendedLoans) extended_loans;
-    mapping(address => AddressCreditInfo) credit_infos;
-
     function fundContract() public payable {
         funds_available += msg.value;
 
@@ -55,6 +49,10 @@ contract FundboxContract {
     function getFundsAvailable() public returns (uint) {
         return funds_available;
     }
+
+    mapping(address => AddressLoanRequests) loan_requests;
+    mapping(address => AddressExtendedLoans) extended_loans;
+    mapping(address => AddressCreditInfo) credit_infos;
 
     function loanExtendedUpdateCredit(uint amount) {
         if (!credit_infos[msg.sender].exists) {
@@ -92,4 +90,36 @@ contract FundboxContract {
             }
         }
     }
+
+    function getUserData() public constant returns(uint, uint, uint, uint) {
+      uint creditLimit;
+      uint numberOfLoans;
+      uint fundCoinsOwned;
+      uint fundCoinsEarned;
+      
+      //creditLimit = credit_infos[msg.sender].credit_available;
+      //numberOfLoans = extended_loans[msg.sender].loans.length;
+      creditLimit = 77;
+      numberOfLoans = 88;
+      fundCoinsOwned = 0;
+      fundCoinsEarned = 0;
+
+      return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit);
+    }
+
+    function getLoanData(uint index) public constant returns(uint, uint, uint) {
+      // originalDebt, outstandingDebt, outstandingInterest
+      return (extended_loans[msg.sender].loans[index].amount_extended,
+              extended_loans[msg.sender].loans[index].balance,
+              extended_loans[msg.sender].loans[index].fees);
+    }
+
+    /* function startSession() public returns?{
+      fundCoinsOwned == fundsInvested
+      fundCoinsEarned == interest
+
+      numberOfLoans
+      getLoan - originalDebt, outstandingDebt, outstandingInterest
+      creditLimit
+    } */
 }

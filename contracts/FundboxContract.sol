@@ -12,6 +12,7 @@ contract FundboxContract is TrackingBasicToken {
     uint public INITIAL_SUPPLY = 100;
     uint public PRICE = 1000;
     address owner_addr;
+    mapping(address => uint) earned;
 
     function FundboxContract(){
         totalSupply = INITIAL_SUPPLY;
@@ -27,7 +28,9 @@ contract FundboxContract is TrackingBasicToken {
         uint payout_per_coin = SafeMath.div(fees, INITIAL_SUPPLY);
         for (uint i = 0; i < coin_owners.length; i++) {
             if (coin_owners[i] > 0) {
-                coin_owners[i].transfer(SafeMath.mul(balances[coin_owners[i]], payout_per_coin));
+                uint amount_earned = SafeMath.mul(balances[coin_owners[i]], payout_per_coin);
+                coin_owners[i].transfer(amount_earned);
+                earned[coin_owners[i]] += amount_earned;
             }
         }
     }

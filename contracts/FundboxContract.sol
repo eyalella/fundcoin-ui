@@ -108,7 +108,7 @@ contract FundboxContract is TrackingBasicToken {
             if (extended_loans[msg.sender].loans[i].balance > 0) {
                 extended_loans[msg.sender].loans[i].balance -= msg.value;
                 if (extended_loans[msg.sender].loans[i].balance == 0) {
-                  payOut(extended_loans[msg.sender].loans[i].fees)
+                  payOut(extended_loans[msg.sender].loans[i].fees);
                 }
                 return true;
             }
@@ -119,13 +119,13 @@ contract FundboxContract is TrackingBasicToken {
       uint creditLimit;
       uint numberOfLoans;
       uint fundCoinsOwned;
-      uint fundCoinsEarned;
+      uint etherEarned;
 
       if (!credit_infos[msg.sender].exists) {
         creditLimit = 0;
         numberOfLoans = 0;
         fundCoinsOwned = 0;
-        fundCoinsEarned = 0;
+        etherEarned = 0;
       } else {
         creditLimit = credit_infos[msg.sender].credit_available;
         numberOfLoans = extended_loans[msg.sender].loans.length;

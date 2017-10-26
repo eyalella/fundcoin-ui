@@ -1,7 +1,42 @@
 pragma solidity ^0.4.11;
 
+import 'contracts/TrackingBasicToken.sol';
+import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
-contract FundboxContract {
+contract FundboxContract is TrackingBasicToken {
+
+    //########## FUNDCOIN ###########
+    string public name = 'FundCoin';
+    string public symbol = 'FC';
+    uint public decimals = 0;
+    uint public INITIAL_SUPPLY = 100;
+    uint public PRICE = 1000;
+    address owner_addr;
+    mapping(address => uint) earned;
+
+    function FundboxContract(){
+        totalSupply = INITIAL_SUPPLY;
+        balances[msg.sender] = INITIAL_SUPPLY;
+        owner_addr = msg.sender;
+    }
+
+    function investInFundCoin() public payable {
+        transferFrom(owner_addr, msg.sender, SafeMath.div(msg.value, PRICE));
+    }
+
+    function payOut(uint fees) {
+        uint payout_per_coin = SafeMath.div(fees, INITIAL_SUPPLY);
+        for (uint i = 0; i < coin_owners.length; i++) {
+            if (coin_owners[i] > 0) {
+                uint amount_earned = SafeMath.mul(balances[coin_owners[i]], payout_per_coin);
+                coin_owners[i].transfer(amount_earned);
+                earned[coin_owners[i]] += amount_earned;
+            }
+        }
+    }
+
+
+    //########## FUNDBOX CONTRACT ###########
 
     enum LoanRequestStatus { Accepted, Rejected, Pending }
     bool test = true;
@@ -97,29 +132,29 @@ contract FundboxContract {
       uint fundCoinsOwned;
       uint fundCoinsEarned;
 
-      //creditLimit = credit_infos[msg.sender].credit_available;
-      //numberOfLoans = extended_loans[msg.sender].loans.length;
-      creditLimit = 77;
-      numberOfLoans = 88;
-      fundCoinsOwned = 0;
-      fundCoinsEarned = 0;
+      if (!credit_infos[msg.sender].exists) {
+        creditLimit = 0;
+        numberOfLoans = 0;
+        fundCoinsOwned = 0;
+        fundCoinsEarned = 0;
+      } else {
+        creditLimit = credit_infos[msg.sender].credit_available;
+        numberOfLoans = extended_loans[msg.sender].loans.length;
+        fundCoinsOwned = balanceOf(msg.sender);
+        fundCoinsEarned = 0;
+      }
 
       return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit, msg.sender);
     }
 
     function getLoanData(uint index) public constant returns(uint, uint, uint) {
       // originalDebt, outstandingDebt, outstandingInterest
-      return (extended_loans[msg.sender].loans[index].amount_extended,
-              extended_loans[msg.sender].loans[index].balance,
-              extended_loans[msg.sender].loans[index].fees);
+      if (!credit_infos[msg.sender].exists) {
+        return (0,8,0);
+      } else {
+        return (extended_loans[msg.sender].loans[index].amount_extended,
+                extended_loans[msg.sender].loans[index].balance,
+                extended_loans[msg.sender].loans[index].fees);
+      }
     }
-
-    /* function startSession() public returns?{
-      fundCoinsOwned == fundsInvested
-      fundCoinsEarned == interest
-
-      numberOfLoans
-      getLoan - originalDebt, outstandingDebt, outstandingInterest
-      creditLimit
-    } */
 }

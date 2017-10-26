@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AddAddressButtonContainer from "../../user/ui/addAddressButton/AddAddressButtonContainer"
+import { Link } from 'react-router'
 
 class Home extends Component {
   render() {

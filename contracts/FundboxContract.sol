@@ -4,6 +4,7 @@ pragma solidity ^0.4.11;
 contract FundboxContract {
 
     enum LoanRequestStatus { Accepted, Rejected, Pending }
+    bool test = true;
 
     struct LoanRequest {
         uint amount;
@@ -68,7 +69,6 @@ contract FundboxContract {
         credit_infos[msg.sender].credit_available += amount;
     }
 
-
     function requestLoan(uint amount) public returns (bool) {
         loan_requests[msg.sender].requests.push(LoanRequest({amount : amount, status : LoanRequestStatus.Accepted, block_number : block.number}));
         extended_loans[msg.sender].loans.push(ExtendedLoan({amount_extended : amount, fees : 0,
@@ -91,12 +91,12 @@ contract FundboxContract {
         }
     }
 
-    function getUserData() public constant returns(uint, uint, uint, uint) {
+    function getUserData() public constant returns(uint, uint, uint, uint, address) {
       uint creditLimit;
       uint numberOfLoans;
       uint fundCoinsOwned;
       uint fundCoinsEarned;
-      
+
       //creditLimit = credit_infos[msg.sender].credit_available;
       //numberOfLoans = extended_loans[msg.sender].loans.length;
       creditLimit = 77;
@@ -104,7 +104,7 @@ contract FundboxContract {
       fundCoinsOwned = 0;
       fundCoinsEarned = 0;
 
-      return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit);
+      return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit, msg.sender);
     }
 
     function getLoanData(uint index) public constant returns(uint, uint, uint) {

@@ -15,43 +15,36 @@ const mapDispatchToProps = (dispatch) => {
   return {
     sendUserAddress: (event) => {
       const web3 = store.getState().web3.web3Instance;
+      const userAddress = document.getElementById("addressInput").value;
+      debugger;
+      web3.eth.defaultAccount = userAddress
       Fundcoin.setProvider(web3.currentProvider);
-      web3.eth.getAccounts(function(err, accs) {
-        if (err != null) {
-          alert("There was an error fetching your accounts.");
-          return;
-        }
-
-        if (accs.length == 0) {
-          alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
-          return;
-        }
-
-        web3.eth.defaultAccount = accs[0];
-        console.log(accs);
-
-        Fundcoin.deployed().then((contract) => {
-          web3.eth.getBalance(contract.address, () => {
-            console.log(arguments)
-            contract.requestLoan(web3.toWei(2, "ether")).then(() => {
-              web3.eth.getBalance(contract.address, () => {
-                console.log(arguments)
-              });
-            })
+      Fundcoin.deployed()
+        .then((contract) => {
+          contract.sendTransaction({
+              from: userAddress,
+              to: contract.address,
+              value: web3.toWei(15, "ether")
+          }).then((err, data) => {
+            debugger;
           })
-
-          // contract.send(web3.toWei(15, "ether")).then((err, data) => {
-
-          // })
         })
-      });
+
+      // web3.eth.getBalance(contract.address, () => {
+      //   console.log(arguments)
+      //   contract.requestLoan(web3.toWei(2, "ether")).then(() => {
+      //     debugger;
+      //   })
+      // })
     },
   }
 }
 
 const AddAddressButtonContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  { withRef: true }
 )(AddAddressButton)
 
 export default AddAddressButtonContainer

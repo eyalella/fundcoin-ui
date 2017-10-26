@@ -17,6 +17,15 @@ const userReducer = (state = initialState, action) => {
     })
   }
 
+  else if (action.type === "UPDATE_USER_DATA") {
+    return Object.assign({}, state, {
+      fundCoinsOwned: action.fundCoinsOwned,
+      etherEarned: action.etherEarned,
+      numberOfLoans: action.numberOfLoans,
+      creditLimit: action.creditLimit / 1000000,
+    })
+  }
+
   return state
 }
 

@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
+import store from "../../store"
 
 class Fund extends Component {
+  componentDidMount() {
+      debugger;
+      this.test = store.getState();
+  }
+
   render() {
     return(
       <main className="container">

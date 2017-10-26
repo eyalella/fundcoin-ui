@@ -19,17 +19,25 @@ const mapDispatchToProps = (dispatch) => {
       debugger;
       web3.eth.defaultAccount = userAddress
       Fundcoin.setProvider(web3.currentProvider);
-      Fundcoin.deployed()
-        .then((contract) => {
-          contract.sendTransaction({
-              from: userAddress,
-              to: contract.address,
-              value: web3.toWei(15, "ether")
-          }).then((err, data) => {
-            debugger;
-          })
-        })
 
+      // GET USER DATA
+      Fundcoin.deployed()
+        .then((contract) => contract.getUserData.call())
+        .then((data) => console.log(data))
+
+      // SEND TRANSACTION
+      // Fundcoin.deployed()
+      //   .then((contract) => {
+      //     contract.sendTransaction({
+      //         from: userAddress,
+      //         to: contract.address,
+      //         value: web3.toWei(15, "ether")
+      //     }).then((err, data) => {
+      //       debugger;
+      //     })
+      //   })
+
+      // GET CONTRACT BALANCE
       // web3.eth.getBalance(contract.address, () => {
       //   console.log(arguments)
       //   contract.requestLoan(web3.toWei(2, "ether")).then(() => {

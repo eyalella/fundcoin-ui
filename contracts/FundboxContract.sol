@@ -116,23 +116,28 @@ contract FundboxContract is TrackingBasicToken {
         }
     }
 
-    function getUserData() public constant returns(uint, uint, uint, uint, address) {
+    function getUserData() public constant returns(uint, uint, uint, uint, address, uint) {
       uint creditLimit;
       uint numberOfLoans;
       uint fundCoinsOwned;
       uint etherEarned;
+      uint totalLoansBalance;
 
       if (!credit_infos[msg.sender].exists) {
         creditLimit = 0;
         numberOfLoans = 0;
+        totalLoansBalance = 0;
       } else {
         creditLimit = credit_infos[msg.sender].credit_available;
         numberOfLoans = extended_loans[msg.sender].loans.length;
+        for (uint i = 0; i < extended_loans[msg.sender].loans.length; i++) {
+            totalLoansBalance += extended_loans[msg.sender].loans[i].balance;
+        }
       }
       etherEarned = earned[msg.sender];
       fundCoinsOwned = balanceOf(msg.sender);
 
-      return (fundCoinsOwned, etherEarned, numberOfLoans, creditLimit, msg.sender);
+      return (fundCoinsOwned, etherEarned, numberOfLoans, creditLimit, msg.sender, totalLoansBalance);
     }
 
     function getLoanData(uint index) public constant returns(uint, uint, uint) {

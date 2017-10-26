@@ -16,8 +16,7 @@ const mapDispatchToProps = (dispatch) => {
     sendUserAddress: (event) => {
       const web3 = store.getState().web3.web3Instance;
       const userAddress = document.getElementById("addressInput").value;
-      debugger;
-      // web3.eth.defaultAccount = userAddress;
+      web3.eth.defaultAccount = userAddress;
       Fundcoin.setProvider(web3.currentProvider);
 
       // INVEST IN FUNDCOIN
@@ -25,6 +24,17 @@ const mapDispatchToProps = (dispatch) => {
       //   .then((contract) => {
       //     contract.investInFundCoin({
       //       value: web3.toWei(1, "ether"),
+      //       gas: 4476768,
+      //     }).then(() => {
+      //       debugger;
+      //     })
+      //   })
+
+      // MAKE PAYMENT
+      // Fundcoin.deployed()
+      //   .then((contract) => {
+      //     contract.makePayment({
+      //       value: 1000000000000005000,
       //       gas: 4476768,
       //     }).then(() => {
       //       debugger;
@@ -44,6 +54,11 @@ const mapDispatchToProps = (dispatch) => {
       //   .then((contract) => contract.getUserData.call())
       //   .then((data) => console.log(data))
 
+      // GET LOAN DATA
+      // Fundcoin.deployed()
+      //   .then((contract) => contract.getLoanData.call(0))
+      //   .then((data) => console.log(data))
+
       // SEND TRANSACTION
       // Fundcoin.deployed()
       //   .then((contract) => {
@@ -57,14 +72,9 @@ const mapDispatchToProps = (dispatch) => {
       //   })
 
       // GET CONTRACT BALANCE
-      Fundcoin.deployed().then((contract) => {
-        web3.eth.getBalance(contract.address, () => {
-          console.log(arguments)
-            // contract.requestLoan(web3.toWei(2, "ether")).then(() => {
-            //   debugger;
-            // })
-          })
-        });
+      // Fundcoin.deployed().then((contract) => {
+      //   web3.eth.getBalance(contract.address, (err, data) => console.log(data));
+      // })
     },
   }
 }

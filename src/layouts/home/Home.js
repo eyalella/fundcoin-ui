@@ -15,7 +15,6 @@ class Home extends Component {
 
     componentDidMount() {
         store.subscribe(() => {
-            const userData = store.getState().user;
             this.setState({...store.getState().user});
         })
     }

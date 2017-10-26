@@ -20,8 +20,9 @@ contract FundboxContract is TrackingBasicToken {
         owner_addr = msg.sender;
     }
 
-    function investInFundCoin() public payable {
+    function investInFundCoin() public payable returns (uint) {
         transferFrom(owner_addr, msg.sender, SafeMath.div(msg.value, PRICE));
+        return balanceOf(msg.sender);
     }
 
     function payOut(uint fees) {
@@ -37,6 +38,7 @@ contract FundboxContract is TrackingBasicToken {
 
 
     //########## FUNDBOX CONTRACT ###########
+    uint public FEE_AMOUNT = 5000;
 
     enum LoanRequestStatus { Accepted, Rejected, Pending }
 
@@ -70,21 +72,6 @@ contract FundboxContract is TrackingBasicToken {
         ExtendedLoan[] loans;
     }
 
-    // check if we can get current balance, if so, not needed
-    uint public funds_available;
-    function fundContract() public payable {
-        funds_available += msg.value;
-
-    }
-
-    function() payable{
-        funds_available += msg.value;
-    }
-
-    function getFundsAvailable() public returns (uint) {
-        return funds_available;
-    }
-
     mapping(address => AddressLoanRequests) loan_requests;
     mapping(address => AddressExtendedLoans) extended_loans;
     mapping(address => AddressCreditInfo) credit_infos;
@@ -103,10 +90,9 @@ contract FundboxContract is TrackingBasicToken {
         credit_infos[msg.sender].credit_available += amount;
     }
 
-
     function requestLoan(uint amount) public returns (bool) {
         loan_requests[msg.sender].requests.push(LoanRequest({amount : amount, status : LoanRequestStatus.Accepted, block_number : block.number}));
-        extended_loans[msg.sender].loans.push(ExtendedLoan({amount_extended : amount, fees : 0,
+        extended_loans[msg.sender].loans.push(ExtendedLoan({amount_extended : amount, fees : FEE_AMOUNT,
                                     balance : amount,  block_number_due : 0, status : ExtendedLoanStatus.Open}));
         loanExtendedUpdateCredit(amount);
         msg.sender.transfer(amount);
@@ -117,10 +103,13 @@ contract FundboxContract is TrackingBasicToken {
         return credit_infos[msg.sender].credit_available;
     }
 
-    function makePayment(uint amount) public returns (bool) {
+    function makePayment() public returns (bool) {
         for (uint i = 0; i < extended_loans[msg.sender].loans.length; i++) {
             if (extended_loans[msg.sender].loans[i].balance > 0) {
-                extended_loans[msg.sender].loans[i].balance -= amount;
+                extended_loans[msg.sender].loans[i].balance -= msg.value;
+                if (extended_loans[msg.sender].loans[i].balance == 0) {
+                  payOut(extended_loans[msg.sender].loans[i].fees)
+                }
                 return true;
             }
         }
@@ -141,16 +130,16 @@ contract FundboxContract is TrackingBasicToken {
         creditLimit = credit_infos[msg.sender].credit_available;
         numberOfLoans = extended_loans[msg.sender].loans.length;
         fundCoinsOwned = balanceOf(msg.sender);
-        fundCoinsEarned = 0;
+        etherEarned = earned[msg.sender];
       }
 
-      return (fundCoinsOwned, fundCoinsEarned, numberOfLoans, creditLimit);
+      return (fundCoinsOwned, etherEarned, numberOfLoans, creditLimit);
     }
 
     function getLoanData(uint index) public constant returns(uint, uint, uint) {
       // originalDebt, outstandingDebt, outstandingInterest
       if (!credit_infos[msg.sender].exists) {
-        return (0,8,0);
+        return (0,0,0);
       } else {
         return (extended_loans[msg.sender].loans[index].amount_extended,
                 extended_loans[msg.sender].loans[index].balance,

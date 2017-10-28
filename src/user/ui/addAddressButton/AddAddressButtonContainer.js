@@ -12,13 +12,14 @@ const mapStateToProps = (state, ownProps) => {
     return {}
 }
 
-function updateUserData(fundCoinsOwned, etherEarned, numberOfLoans, creditLimit) {
+function updateUserData(fundCoinsOwned, etherEarned, numberOfLoans, creditLimit, totalLoansBalance) {
     return {
         type: 'UPDATE_USER_DATA',
         fundCoinsOwned,
         etherEarned,
         numberOfLoans,
-        creditLimit
+        creditLimit,
+        totalLoansBalance
     }
 }
 
@@ -48,11 +49,13 @@ const mapDispatchToProps = (dispatch) => {
             Fundcoin.deployed()
                 .then((contract) => contract.getUserData.call())
                 .then((data) => {
+                    console.log(web3);
                     const fundCoinsOwned = data[0].toNumber();
                     const etherEarned = data[1].toNumber();
                     const numberOfLoans = data[2].toNumber();
-                    const creditLimit = data[3].toNumber();
-                    store.dispatch(updateUserData(fundCoinsOwned, etherEarned, numberOfLoans, creditLimit));
+                    const creditLimit = web3.fromWei(data[3].toNumber());
+                    const totalLoansBalance = web3.fromWei(data[5].toNumber());
+                    store.dispatch(updateUserData(fundCoinsOwned, etherEarned, numberOfLoans, creditLimit, totalLoansBalance));
                 })
 
 

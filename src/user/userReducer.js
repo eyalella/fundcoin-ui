@@ -22,7 +22,8 @@ const userReducer = (state = initialState, action) => {
       fundCoinsOwned: action.fundCoinsOwned,
       etherEarned: action.etherEarned,
       numberOfLoans: action.numberOfLoans,
-      creditLimit: action.creditLimit / 1000000,
+      creditLimit: action.creditLimit,
+      totalLoansBalance: action.totalLoansBalance,
     })
   }
 

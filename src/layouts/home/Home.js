@@ -10,6 +10,7 @@ class Home extends Component {
             etherEarned: 0,
             numberOfLoans: 0,
             creditLimit: 0,
+            totalLoansBalance: 0,
         };
     }
 
@@ -29,10 +30,11 @@ class Home extends Component {
                 </div>
 
                 <div className="wallet-data">
-                    <div>FundCoins Owned - {this.state.fundCoinsOwned}</div>
-                    <div>Ether Earned - {this.state.etherEarned}</div>
-                    <div>Number Of Loans - {this.state.numberOfLoans}</div>
-                    <div>Credit Available - {this.state.creditLimit}</div>
+                    <div>FundCoins: {this.state.fundCoinsOwned}</div>
+                    <div>Ether Earned: {this.state.etherEarned}</div>
+                    <div>Loans: {this.state.numberOfLoans}</div>
+                    <div>Available credit: {this.state.creditLimit}</div>
+                    <div>Left to pay: {this.state.totalLoansBalance}</div>
                 </div>
             </main>
         )
